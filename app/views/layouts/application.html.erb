@@ -3,7 +3,7 @@
   <head>
     <title><%= content_for(:page_title) || "Drip Capital" %></title>
     <%= csrf_meta_tags %>
-    <%= favicon_link_tag '32x32_light.png', type: 'image/png'%>
+    <%= favicon_link_tag 'drip-favicon-3.ico' %>
     <%= stylesheet_link_tag "application", media: "all" %>
     <%= Samson::Hooks.render_stylesheets(self) %>
     <%= javascript_include_tag "application" %>
