@@ -129,7 +129,7 @@ module Samson
     config.samson.auth.gitlab = Samson::EnvCheck.set?("AUTH_GITLAB")
     config.samson.auth.bitbucket = Samson::EnvCheck.set?("AUTH_BITBUCKET")
 
-    config.samson.uri = URI(ENV["DEFAULT_URL"] || 'http://localhost:3000')
+    config.samson.uri = URI(ENV["DEFAULT_URL"] || 'https://deploy.dripcapital.com')
     config.sse_rails_engine.access_control_allow_origin = config.samson.uri.to_s
 
     config.samson.stream_origin = ENV['STREAM_ORIGIN'].presence || config.samson.uri.to_s
