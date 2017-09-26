@@ -62,6 +62,7 @@ class JobExecution
   # so that the stream sockets are closed
   def close
     @output.write('', :reloaded)
+    @job.update_output!(OutputAggregator.new(@output).to_s)
     @output.close
   end
 
@@ -74,6 +75,7 @@ class JobExecution
       @thread.join(cancel_timeout) || @thread.kill
     end
     @job.cancelled!
+    @job.update_output!(OutputAggregator.new(@output).to_s)
     finish
   end
 
@@ -118,6 +120,7 @@ class JobExecution
     puts_if_present "JobExecution failed: #{exception.message}"
     puts_if_present render_backtrace(exception)
     @job.errored! if @job.active?
+    @job.update_output!(OutputAggregator.new(@output).to_s)
   end
 
   def run
