@@ -61,7 +61,7 @@ class JobExecution
   # Used on queued jobs when shutting down
   # so that the stream sockets are closed
   def close
-    @job.update_output!(OutputAggregator.new(@output).to_s)
+    Rails.logger.info "CLOSING #{@output}"
     @output.write('', :reloaded)
     @output.close
   end
@@ -75,6 +75,7 @@ class JobExecution
       @thread.join(cancel_timeout) || @thread.kill
     end
     @job.cancelled!
+    Rails.logger.info "CANCELLING #{@output}"
     @job.update_output!(OutputAggregator.new(@output).to_s)
     finish
   end
@@ -120,6 +121,7 @@ class JobExecution
     puts_if_present "JobExecution failed: #{exception.message}"
     puts_if_present render_backtrace(exception)
     @job.errored! if @job.active?
+    Rails.logger.info "ERROR #{@output}"
     @job.update_output!(OutputAggregator.new(@output).to_s)
   end
 
@@ -143,6 +145,9 @@ class JobExecution
     else
       @job.failed!
     end
+
+    Rails.logger.info "RUN #{@output}"
+    @job.update_output!(OutputAggregator.new(@output).to_s)
 
   # when thread was killed by 'cancel' it is in a bad state, avoid working
   rescue => e
