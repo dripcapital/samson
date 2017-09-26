@@ -31,3 +31,5 @@ Puma::Runner.prepend(Module.new do
     super
   end
 end)
+
+plugin :tmp_restart
