@@ -61,8 +61,8 @@ class JobExecution
   # Used on queued jobs when shutting down
   # so that the stream sockets are closed
   def close
-    @output.write('', :reloaded)
     @job.update_output!(OutputAggregator.new(@output).to_s)
+    @output.write('', :reloaded)
     @output.close
   end
 
