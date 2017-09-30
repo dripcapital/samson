@@ -26,7 +26,7 @@ class JobExecution
     @finish_callbacks = []
     @env = env
     @job = job
-    @reference = reference
+    @reference = reference.split(':').first
     @execution_block = block
     @cancelled = false
     @finished = false
