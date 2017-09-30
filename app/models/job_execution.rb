@@ -26,6 +26,7 @@ class JobExecution
     @finish_callbacks = []
     @env = env
     @job = job
+    @full_reference = reference
     @reference = reference.split(':').first
     @execution_block = block
     @cancelled = false
@@ -97,7 +98,8 @@ class JobExecution
       PROJECT_NAME: @job.project.name,
       PROJECT_PERMALINK: @job.project.permalink,
       PROJECT_REPOSITORY: @job.project.repository_url,
-      CACHE_DIR: artifact_cache_dir
+      CACHE_DIR: artifact_cache_dir,
+      FULL_REFERENCE: @full_reference
     }.merge(env)
 
     commands = env.map do |key, value|
