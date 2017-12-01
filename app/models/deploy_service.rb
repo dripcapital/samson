@@ -7,7 +7,7 @@ class DeployService
     @user = user
   end
 
-  def deploy(stage, attributes)
+  def deploy(stage, attributes, params = {})
     deploy = stage.create_deploy(user, attributes)
 
     if deploy.persisted?
@@ -22,7 +22,7 @@ class DeployService
       if deploy.waiting_for_buddy? && !copy_approval_from_last_deploy(deploy)
         Samson::Hooks.fire(:buddy_request, deploy)
       else
-        confirm_deploy(deploy, attributes)
+        confirm_deploy(deploy, params)
       end
     end
 
@@ -48,7 +48,7 @@ class DeployService
   private
 
   def construct_env(stage, params = {})
-    env = { STAGE: stage.permalink, DEPLOY_MESSAGE: params[:message] }
+    env = { STAGE: stage.permalink, DEPLOY_MESSAGE: params[:deploy].try(:[], :message) }
 
     group_names = stage.deploy_groups.sort_by(&:natural_order).map(&:env_value).join(" ")
     env[:DEPLOY_GROUPS] = group_names if group_names.present?
