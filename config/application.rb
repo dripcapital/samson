@@ -140,7 +140,7 @@ module Samson
       protocol: config.samson.uri.scheme
     }
 
-    config.action_controller.action_on_unpermitted_parameters = :raise
+    # config.action_controller.action_on_unpermitted_parameters = :raise
     config.action_view.default_form_builder = 'Samson::FormBuilder' # string so we can auto-reload it
 
     config.active_job.queue_adapter = :sucker_punch
