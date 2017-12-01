@@ -22,17 +22,17 @@ class DeployService
       if deploy.waiting_for_buddy? && !copy_approval_from_last_deploy(deploy)
         Samson::Hooks.fire(:buddy_request, deploy)
       else
-        confirm_deploy(deploy)
+        confirm_deploy(deploy,, attributes)
       end
     end
 
     deploy
   end
 
-  def confirm_deploy(deploy)
+  def confirm_deploy(deploy, params = {})
     stage = deploy.stage
 
-    job_execution = JobExecution.new(deploy.reference, deploy.job, env: construct_env(stage))
+    job_execution = JobExecution.new(deploy.reference, deploy.job, env: construct_env(stage, params))
     job_execution.on_start do
       send_before_notifications(deploy)
     end
@@ -47,8 +47,8 @@ class DeployService
 
   private
 
-  def construct_env(stage)
-    env = { STAGE: stage.permalink }
+  def construct_env(stage, params = {})
+    env = { STAGE: stage.permalink, DEPLOY_MESSAGE: params[:message] }
 
     group_names = stage.deploy_groups.sort_by(&:natural_order).map(&:env_value).join(" ")
     env[:DEPLOY_GROUPS] = group_names if group_names.present?
